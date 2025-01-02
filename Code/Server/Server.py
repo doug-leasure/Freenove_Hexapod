@@ -49,6 +49,7 @@ class Server:
     def turn_on_server(self):
         #ip adress
         HOST=self.get_interface_ip()
+        
         #Port 8002 for video transmission
         if self.video_enabled:
             self.server_socket = socket.socket()
@@ -65,7 +66,8 @@ class Server:
         
     def turn_off_server(self):
         try:
-            self.connection.close()
+            if self.video_enabled: 
+                self.connection.close()
             self.connection1.close()
         except :
             print ('\n'+"No client connection")
