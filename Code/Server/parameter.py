@@ -138,3 +138,4 @@ if __name__ == '__main__':
         print(f"PCB Version: {pcb_version}.0")
         pi_version = manager.get_raspberry_pi_version()
         print(f"Raspberry PI version is {'less than 5' if pi_version == 1 else '5'}.")
+
