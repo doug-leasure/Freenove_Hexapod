@@ -4,10 +4,10 @@ import time
 import fcntl
 import socket
 import struct
-from picamera2 import Picamera2,Preview
-from picamera2.encoders import JpegEncoder
-from picamera2.outputs import FileOutput
-from picamera2.encoders import Quality
+# from picamera2 import Picamera2,Preview
+# from picamera2.encoders import JpegEncoder
+# from picamera2.outputs import FileOutput
+# from picamera2.encoders import Quality
 from threading import Condition
 import threading
 from Led import *
@@ -32,6 +32,7 @@ class StreamingOutput(io.BufferedIOBase):
 class Server:
     def __init__(self):
         self.tcp_flag=False
+        self.video_enabled=False
         self.led=Led()
         self.adc=ADC()
         self.servo=Servo()
@@ -71,7 +72,8 @@ class Server:
     def reset_server(self):
         self.turn_off_server()
         self.turn_on_server()
-        self.video=threading.Thread(target=self.transmission_video)
+        if self.video_enabled: 
+            self.video=threading.Thread(target=self.transmission_video)
         self.instruction=threading.Thread(target=self.receive_instruction)
         self.video.start()
         self.instruction.start()

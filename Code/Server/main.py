@@ -13,6 +13,7 @@ class MyWindow(QMainWindow,Ui_server):
     def __init__(self):
         self.user_ui=True
         self.start_tcp=False
+        self.video_enabled=False
         self.server=Server()
         self.parseOpt()
         if self.user_ui:
@@ -24,8 +25,9 @@ class MyWindow(QMainWindow,Ui_server):
         if self.start_tcp:
             self.server.turn_on_server()
             self.server.tcp_flag=True
-            self.video=threading.Thread(target=self.server.transmission_video)
-            self.video.start()
+            if self.video_enabled: 
+                self.video=threading.Thread(target=self.server.transmission_video)
+                self.video.start()
             self.instruction=threading.Thread(target=self.server.receive_instruction)
             self.instruction.start()
             if self.user_ui:
@@ -49,8 +51,9 @@ class MyWindow(QMainWindow,Ui_server):
             self.states.setText('On')
             self.server.turn_on_server()
             self.server.tcp_flag=True
-            self.video=threading.Thread(target=self.server.transmission_video)
-            self.video.start()
+            if self.video_enabled: 
+                self.video=threading.Thread(target=self.server.transmission_video)
+                self.video.start()
             self.instruction=threading.Thread(target=self.server.receive_instruction)
             self.instruction.start()
         else:
