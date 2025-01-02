@@ -13,7 +13,6 @@ class MyWindow(QMainWindow,Ui_server):
     def __init__(self):
         self.user_ui=True
         self.start_tcp=False
-        self.video_enabled=False
         self.server=Server()
         self.parseOpt()
         if self.user_ui:
@@ -25,7 +24,7 @@ class MyWindow(QMainWindow,Ui_server):
         if self.start_tcp:
             self.server.turn_on_server()
             self.server.tcp_flag=True
-            if self.video_enabled: 
+            if self.server.video_enabled: 
                 self.video=threading.Thread(target=self.server.transmission_video)
                 self.video.start()
             self.instruction=threading.Thread(target=self.server.receive_instruction)
@@ -37,13 +36,15 @@ class MyWindow(QMainWindow,Ui_server):
         
         
     def parseOpt(self):
-        self.opts,self.args = getopt.getopt(sys.argv[1:],"tn")
+        self.opts,self.args = getopt.getopt(sys.argv[1:],"tnc")
         for o,a in self.opts:
             if o in ('-t'):
                 print ("Open TCP")
                 self.start_tcp=True
             elif o in ('-n'):
                 self.user_ui=False
+            elif o in ('-c'):
+                self.server.video_enabled=True
                 
     def on_and_off_server(self):
         if self.pushButton_On_And_Off.text() == 'On':
@@ -51,7 +52,7 @@ class MyWindow(QMainWindow,Ui_server):
             self.states.setText('On')
             self.server.turn_on_server()
             self.server.tcp_flag=True
-            if self.video_enabled: 
+            if self.server.video_enabled: 
                 self.video=threading.Thread(target=self.server.transmission_video)
                 self.video.start()
             self.instruction=threading.Thread(target=self.server.receive_instruction)
@@ -61,7 +62,8 @@ class MyWindow(QMainWindow,Ui_server):
             self.states.setText('Off')
             self.server.tcp_flag=False
             try:
-                stop_thread(self.video)
+                if self.server.video_enabled: 
+                    stop_thread(self.video)
                 stop_thread(self.instruction)
             except Exception as e:
                 print(e)
@@ -69,12 +71,14 @@ class MyWindow(QMainWindow,Ui_server):
             print("close")
     def closeEvent(self,event):
         try:
-            stop_thread(self.video)
+            if self.server.video_enabled: 
+                stop_thread(self.video)
             stop_thread(self.instruction)
         except:
             pass
         try:
-            self.server.server_socket.shutdown(2)
+            if self.server.video_enabled: 
+                self.server.server_socket.shutdown(2)
             self.server.server_socket1.shutdown(2)
             self.server.turn_off_server()
         except:
