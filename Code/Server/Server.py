@@ -74,8 +74,8 @@ class Server:
         self.turn_on_server()
         if self.video_enabled: 
             self.video=threading.Thread(target=self.transmission_video)
+            self.video.start()
         self.instruction=threading.Thread(target=self.receive_instruction)
-        self.video.start()
         self.instruction.start()
     def send_data(self,connect,data):
         try:
