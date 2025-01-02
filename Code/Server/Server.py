@@ -4,10 +4,10 @@ import time
 import fcntl
 import socket
 import struct
-# from picamera2 import Picamera2,Preview
-# from picamera2.encoders import JpegEncoder
-# from picamera2.outputs import FileOutput
-# from picamera2.encoders import Quality
+from picamera2 import Picamera2,Preview
+from picamera2.encoders import JpegEncoder
+from picamera2.outputs import FileOutput
+from picamera2.encoders import Quality
 from threading import Condition
 import threading
 from Led import *
@@ -50,10 +50,11 @@ class Server:
         #ip adress
         HOST=self.get_interface_ip()
         #Port 8002 for video transmission
-        self.server_socket = socket.socket()
-        self.server_socket.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEPORT,1)
-        self.server_socket.bind((HOST, 8002))              
-        self.server_socket.listen(1)
+        if self.video_enabled:
+            self.server_socket = socket.socket()
+            self.server_socket.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEPORT,1)
+            self.server_socket.bind((HOST, 8002))              
+            self.server_socket.listen(1)
         
         #Port 5002 is used for instruction sending and receiving
         self.server_socket1 = socket.socket()
